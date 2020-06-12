@@ -1,0 +1,9 @@
+DIALECT = 'mysql+pymysql'
+DRIVER = 'mysqldb'
+USERNAME = 'root'
+HOST = '120.133.142.144'
+PORT = 15336
+PASSWORD = 'sate1llite'
+DATABASE = 'policydata'
+SQLALCHEMY_DATABASE_URI = DIALECT + '://' + USERNAME + ':' + PASSWORD + '@' + HOST + ':' + str(PORT) + '/' + DATABASE
+SQLALCHEMY_TRACK_MODIFICATIONS = False
