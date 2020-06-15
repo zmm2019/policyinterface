@@ -65,7 +65,7 @@ def sendpolicy():
         policymodel.channelOrderId = postdata['sequencecode']
         policymodel.Status = '等待投保'
         policymodel.CreateDate = datetime.datetime.now()
-        policymodel.appkey = postdata['appkey']
+        policymodel.appkey = postdata['action']            
         policymodel.bizContent = postdata['usercode']
         policymodel.policyNo = postdata['solutionid']
         policymodel.policySolutionID = postdata['productid']
@@ -104,7 +104,68 @@ def sendpolicy():
         policymodel.mpAmount = postdata['weightunit']
         policymodel.volume = postdata['volume']
         policymodel.mpRate = postdata['volumeunit']
+        #必填项校验
+        exMessage = ''
+        if policymodel.appkey == "":
+            exMessage += "appkey不能为空;"
+        if policymodel.bizContent == "":
+            exMessage += "usercode不能为空;"
+        if policymodel.policyNo == "":
+            exMessage += "solutionid不能为空;"
+        if policymodel.channelOrderId == "":
+            exMessage += "sequencecode不能为空;"
+        if policymodel.policySolutionID == "":
+            exMessage += "productid不能为空;"
+        if policymodel.appkey == "":
+            exMessage += "action不能为空;"
+        if policymodel.applicanttype == "":
+            exMessage += "applicanttype不能为空;"
+        if policymodel.custId == "":
+            exMessage += "applicantidnumber不能为空;"
+        if policymodel.insuredName == "":
+            exMessage += "insuredName不能为空;"
+        if policymodel.insuredtype == "":
+            exMessage += "insuredtype不能为空;"
+        if policymodel.shipperProperty == "":
+            exMessage += "insuredidnumber不能为空;"
+        if policymodel.cargeValue == "":
+            exMessage += "policyamount不能为空;"
+        if policymodel.policyRate == "":
+            exMessage += "rate不能为空;"
+        if policymodel.termContent == "":
+            exMessage += "deductible不能为空;"
+        if policymodel.insuranceFee == "":
+            exMessage += "premium不能为空;"
+        if policymodel.mpObject == "":
+            exMessage += "insurancecoveragename不能为空;"
+        if policymodel.mpRelation == "":
+            exMessage += "chargetypecode不能为空;"
+        if policymodel.departDateTime == "":
+            exMessage += "insuredatetime不能为空;"
+        elif policymodel.departDateTime.len != 14:
+           raise Exception("错误：起运日期InsureDateTime格式有误，正确格式：20170526153733;")
+        
+
+        if policymodel.transitSpot == "" and policymodel.vehiclenumber =="":
+            exMessage += "运单号或者车牌号至少一个必填;"
+        if policymodel.trafficType == "":
+            exMessage += "transportmodecode不能为空;"
+        if policymodel.departSpot == "":
+            exMessage += "startaddress不能为空;"
+        if policymodel.deliveryAddress == "":
+            exMessage += "endaddress不能为空;"
+        if policymodel.cargoName == "":
+            exMessage += "descriptionofgoods不能为空;"
+        if policymodel.cargoType == "":
+            exMessage += "cargotype不能为空;"
+        if policymodel.cargoCount:
+            exMessage += "packagequantity不能为空;"
+        if exMessage !="":
+            raise Exception(exMessage)
+        print(exMessage)
             
+
+    
         # 投递保险公司 或 龙琨编号
         # 反馈客户
 
@@ -114,13 +175,14 @@ def sendpolicy():
         result['applicationserial'] = '投保成功'
         resultReturn = json.dumps(result)
         return json.loads(resultReturn)
+
     except Exception as err:
         result = {}
         result['responsecode'] = '0'
-        result['responsemessage'] = str(err).
+        result['responsemessage'] = str(err)
         result['applicationserial'] = ''
         resultReturn = json.dumps(result)
-        return json.loads(resultReturn)
+        return json.loads(resultReturn)+exMessage
 
 
 # 注销接口
