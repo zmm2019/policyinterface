@@ -59,15 +59,51 @@ def sendpolicy():
     # 获取请求
     try:
         postdata = json.loads(request.get_data(as_text=True))
-        # 保存客户运单
-        # policymodel = policy_model.remotedata()
-
-        # policymodel.guid = str(uuid.uuid1())
-        # policymodel.channelOrderId = postdata['sequencecode']
-        # policymodel.Status = '等待投保'
-        # policymodel.CreateDate = datetime.datetime.now()
-        
-        # policymodel.save()
+       # 保存客户运单
+        policymodel = policy_model.remotedata()
+        policymodel.guid = str(uuid.uuid1())
+        policymodel.channelOrderId = postdata['sequencecode']
+        policymodel.Status = '等待投保'
+        policymodel.CreateDate = datetime.datetime.now()
+        policymodel.appkey = postdata['appkey']
+        policymodel.bizContent = postdata['usercode']
+        policymodel.policyNo = postdata['solutionid']
+        policymodel.policySolutionID = postdata['productid']
+        policymodel.applicanttype = postdata['applicanttype']
+        policymodel.custId = postdata['applicantidnumber']
+        policymodel.insuredName = postdata['insuredname']
+        policymodel.insuredtype = postdata['insuredtype']
+        policymodel.shipperProperty = postdata['insuredidnumber']
+        policymodel.shipperContact = postdata['spname']
+        policymodel.cargeValue = postdata['policyamount']
+        policymodel.policyRate = postdata['rate']
+        policymodel.termContent = postdata['deductible']
+        policymodel.insuranceFee = postdata['premium']
+        policymodel.mpObject = postdata['insurancecoveragename']
+        policymodel.mpRelation = postdata['chargetypecode']
+        policymodel.departDateTime = postdata['insuredatetime']
+        policymodel.transitSpot = postdata['originaldocumentnumber']
+        policymodel.trafficType = postdata['transportmodecode']
+        policymodel.licenseId = postdata['vehiclenumber']
+        policymodel.departProvince = postdata['startprovince']
+        policymodel.departCity = postdata['startcity']
+        policymodel.destinationProvice = postdata['endprovince']
+        policymodel.destinationCity = postdata['endcity']
+        policymodel.destinationDistrict = postdata['enddistrict']
+        policymodel.departSpot = postdata['startaddress']
+        policymodel.deliveryAddress = postdata['endaddress']
+        policymodel.departStation = postdata['startareacode']
+        policymodel.arriveStation = postdata['endareacode']
+        policymodel.arriveProperty = postdata['transitaddress']
+        policymodel.cargoName = postdata['descriptionofgoods']
+        policymodel.cargoType = postdata['cargotype']
+        policymodel.packageType = postdata['packagetype']
+        policymodel.cargoCount = postdata['packagequantity']
+        policymodel.cargoKind = postdata['packageunit']
+        policymodel.cargoWeight = postdata['weight']
+        policymodel.mpAmount = postdata['weightunit']
+        policymodel.volume = postdata['volume']
+        policymodel.mpRate = postdata['volumeunit']
             
         # 投递保险公司 或 龙琨编号
         postInsurer_HT('')
