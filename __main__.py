@@ -57,7 +57,7 @@ def index():
 @app.route('/sendpolicy', methods=['POST'])
 def sendpolicy():
     try:
-        # 获取请求
+        # 获取请求 
         postdata = json.loads(request.get_data(as_text=True))
        # 保存客户运单
         policymodel = policy_model.remotedata()
