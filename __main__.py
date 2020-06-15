@@ -15,6 +15,7 @@ import suds
 from suds.client import Client
 import hashlib
 
+
 # 创建flask对象
 app = Flask(__name__)
 appowner = 'Draginins'  # 软件所有者
