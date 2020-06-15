@@ -55,37 +55,301 @@ def index():
 # 投保接口
 @app.route('/sendpolicy', methods=['POST'])
 def sendpolicy():
-    # 获取请求
     try:
+        # 获取请求
         postdata = json.loads(request.get_data(as_text=True))
-        # 保存客户运单
-        # policymodel = policy_model.remotedata()
 
-        # policymodel.guid = str(uuid.uuid1())
-        # policymodel.channelOrderId = postdata['sequencecode']
-        # policymodel.Status = '等待投保'
-        # policymodel.CreateDate = datetime.datetime.now()
-        
-        # policymodel.save()
-            
+        #写入日志
+        f1 = open('/tmp/sendpolicy.txt','a')
+        f1.write(d_now_yyyy_mm_dd_HH_MM_SS(datetime.datetime.now()) + ", Request json：" + str(json.loads(postdata)))
+        f1.close()
+
+        #region 接收请求参数
+        appkey=xstr(postdata['appkey'])
+        usercode=xstr(postdata['usercode'])
+        sequencecode=xstr(postdata['sequencecode'])
+        solutionid=xstr(postdata['solutionid'])
+        productid=xstr(postdata['productid'])
+        action=xstr(postdata['action'])
+        applicantname=xstr(postdata['applicantname'])
+        applicanttype=xstr(postdata['applicanttype'])
+        applicantidnumber=xstr(postdata['applicantidnumber'])
+        insuredname=xstr(postdata['insuredname'])
+        insuredtype=xstr(postdata['insuredtype'])
+        insuredidnumber=xstr(postdata['insuredidnumber'])
+        spname=xstr(postdata['spname'])
+        policyamount=xstr(postdata['policyamount'])
+        rate=xstr(postdata['rate'])
+        deductible=xstr(postdata['deductible'])
+        premium=xstr(postdata['premium'])
+        insurancecoveragename=xstr(postdata['insurancecoveragename'])
+        chargetypecode=xstr(postdata['chargetypecode'])
+        insuredatetime=xstr(postdata['insuredatetime'])
+        originaldocumentnumber=xstr(postdata['originaldocumentnumber'])
+        transportmodecode=xstr(postdata['transportmodecode'])
+        vehiclenumber=xstr(postdata['vehiclenumber'])
+        startprovince=xstr(postdata['startprovince'])
+        startcity=xstr(postdata['startcity'])
+        startdistrict=xstr(postdata['startdistrict'])
+        endprovince=xstr(postdata['endprovince'])
+        endcity=xstr(postdata['endcity'])
+        enddistrict=xstr(postdata['enddistrict'])
+        startaddress=xstr(postdata['startaddress'])
+        endaddress=xstr(postdata['endaddress'])
+        startareacode=xstr(postdata['startareacode'])
+        endareacode=xstr(postdata['endareacode'])
+        transitaddress=xstr(postdata['transitaddress'])
+        descriptionofgoods=xstr(postdata['descriptionofgoods'])
+        cargotype=xstr(postdata['cargotype'])
+        packagetype=xstr(postdata['packagetype'])
+        packagequantity=xstr(postdata['packagequantity'])
+        packageunit=xstr(postdata['packageunit'])
+        weight=xstr(postdata['weight'])
+        weightunit=xstr(postdata['weightunit'])
+        volume=xstr(postdata['volume'])
+        volumeunit=xstr(postdata['volumeunit'])
+        #endregion
+
+        #region 校验
+        connStr=""
+        if(len(postdata)>0)
+        {
+            #region 必填项校验
+            exMessage = "";
+            if (appkey) == "")
+            {
+                exMessage += "appkey不能为空;";
+            }
+            if (usercode == "")
+            {
+                exMessage += "usercode不能为空;";
+            }
+            if (usercode == "")
+            {
+                exMessage += "solutionid不能为空;";
+            }
+            if (sequencecode == "")
+            {
+                exMessage += "sequencecode不能为空;";
+            }
+            if (productid == "")
+            {
+                exMessage += "productid不能为空;";
+            }
+            if (action == "")
+            {
+                exMessage += "action不能为空;";
+            }
+            if (applicantname == "")
+            {
+                exMessage += "applicantname不能为空;";
+            }
+            if (applicanttype == "")
+            {
+                exMessage += "applicanttype不能为空;";
+            }
+            if (applicantidnumber == "")
+            {
+                exMessage += "applicantidnumber不能为空;";
+            }
+            if (insuredname == "")
+            {
+                exMessage += "insuredname不能为空;";
+            }
+            if (insuredtype == "")
+            {
+                exMessage += "insuredtype不能为空;";
+            }
+            if (insuredidnumber == "")
+            {
+                exMessage += "insuredidnumber不能为空;";
+            }
+            if (policyamount == "")
+            {
+                exMessage += "policyamount不能为空;";
+            }
+            if (rate == "")
+            {
+                exMessage += "rate不能为空;";
+            }
+            if (deductible == "")
+            {
+                exMessage += "deductible不能为空;";
+            }
+            if (premium == "")
+            {
+                exMessage += "premium不能为空;";
+            }
+            if (insurancecoveragename == "")
+            {
+                exMessage += "insurancecoveragename不能为空;";
+            }
+            if (chargetypecode == "")
+            {
+                exMessage += "chargetypecode不能为空;";
+            }
+            if (insuredatetime == "")
+            {
+                exMessage += "insuredatetime不能为空;";
+            }
+            else
+            {
+                if (insuredatetime.Length != 14)
+                {
+                    throw new Exception("错误：起运日期InsureDateTime格式有误，正确格式：20170526153733; ");
+                }
+                else
+                {
+                    departDateTime = insuredatetime;
+                    insuredatetime = departDateTime.Substring(0, 4) + "-" + departDateTime.Substring(4, 2) + "-" + departDateTime.Substring(6, 2) + " "
+                        + departDateTime.Substring(8, 2) + ":" + departDateTime.Substring(10, 2) + ":" + departDateTime.Substring(12, 2);
+                    #倒签单校验
+                    if (DateTime.Parse(loginkPolicyRequest.insuredatetime).AddHours(1).Subtract(DateTime.Now).TotalMinutes < 0)
+                        exMessage += "当前不允许倒签单;";
+                }
+            }
+            if (DATAPROCESS.NULL2STR(loginkPolicyRequest.originaldocumentnumber) + DATAPROCESS.NULL2STR(loginkPolicyRequest.vehiclenumber) == "")
+            {
+                exMessage += "运单号或者车牌号至少一个必填;";
+            }
+            if (DATAPROCESS.NULL2STR(loginkPolicyRequest.transportmodecode) == "")
+            {
+                exMessage += "transportmodecode不能为空;";
+            }
+            if (DATAPROCESS.NULL2STR(loginkPolicyRequest.startaddress) == "")
+            {
+                exMessage += "startaddress不能为空;";
+            }
+            if (DATAPROCESS.NULL2STR(loginkPolicyRequest.endaddress) == "")
+            {
+                exMessage += "endaddress不能为空;";
+            }
+            if (DATAPROCESS.NULL2STR(loginkPolicyRequest.descriptionofgoods) == "")
+            {
+                exMessage += "descriptionofgoods不能为空;";
+            }
+            if (DATAPROCESS.NULL2STR(loginkPolicyRequest.cargotype) == "")
+            {
+                exMessage += "cargotype不能为空;;";
+            }
+
+            if (DATAPROCESS.NULL2STR(loginkPolicyRequest.packagequantity) == "")
+            {
+                exMessage += "packagequantity不能为空;";
+            }
+
+            if (exMessage != "")
+                throw new Exception(exMessage);
+
+            bool isSDS = true;
+            bool isDQM = false;
+            if (startprovince != "" && endprovince != "")
+            {
+                #三段模式，需校验
+            }
+            else if (startcode != "" && endcode != "")
+            {
+                #地区码模式，需校验
+                isDQM = true;
+                isSDS = false;
+            }
+            else
+            {
+                #既不是三段模式，也不是地区码模式，需报错
+                throw new Exception("地址信息有误，请确认三段模式或地区码模式");
+            }
+            #endregion
+        }
+        #endregion
+
+        #region 保存客户运单
+        #识别信息
+        policymodel = policy_model.remotedata()
+        policymodel.guid = str(uuid.uuid1())
+        policymodel.appkey = userAppkey  #?
+        policymodel.bizContent = usercode
+        policymodel.shipperContact = spname
+        policymodel.systemOrderId = sequencecode
+        policymodel.policyNo = solutionid
+        policymodel.relationType = productid
+        policymodel.channelOrderId = sequencecode
+        #投保主体
+        policymodel.custCoName = applicantname
+        applicanttype = applicanttype == "175" ? "企业" : "个人"
+        policymodel.custProperty = applicanttype #?
+        policymodel.custId = applicantidnumber
+        policymodel.insuredName = insuredname
+        insuredtype = applicanttype == "175" ? "企业" : "个人"
+        policymodel.shipperProperty = insuredtype #?
+        policymodel.shipperId = insuredidnumber
+        #保险信息
+        policymodel.cargeValue = policyamount
+        policymodel.policyRate = rate
+        policymodel.termContent = deductible
+        policymodel.insuranceFee = premium
+        policymodel.mpObject = insurancecoveragename
+        policymodel.mpRelation = chargetypecode
+        #运输信息
+        policymodel.departDateTime = insuredatetime
+        policymodel.transitSpot = originaldocumentnumber
+        string trafficType = "公路"
+        if (transportmodecode == "3")
+        trafficType = "公路"
+        else if (transportmodecode == "5")
+        trafficType = "铁路"
+        else if (transportmodecode == "8")
+        trafficType = "水路"
+        else
+        trafficType = "公路"
+        policymodel.trafficType = trafficType #?
+        policymodel.licenseId = vehiclenumber
+
+        policymodel.departProvince = startprovince #?
+        policymodel.departCity = startcity #?
+        policymodel.departDistrict = startdistrict #?
+        policymodel.destinationProvice = endprovince #?
+        policymodel.destinationCity = endcity #?
+        policymodel.destinationDistrict = enddistrict #?
+        policymodel.departStation = startareacode
+        policymodel.arriveStation = endareacode
+        policymodel.departSpot = startaddress
+        policymodel.deliveryAddress = endaddress
+        policymodel.arriveProperty = transitaddress
+        policymodel.claimLimit2 = needpdf
+        #货物信息
+        policymodel.cargoName = descriptionofgoods
+        policymodel.cargoType = cargotype
+        policymodel.packageType = packagetype
+        policymodel.cargoCount = packagequantity
+
+        policymodel.cargoKind = packageunit
+        policymodel.cargoWeight = weight
+        policymodel.mpAmount = weightunit
+        policymodel.volume = volume
+        policymodel.mpRate = volumeunit
+
+        policymodel.CreateDate = d_now_yyyy_mm_dd_HH_MM_SS(datetime.datetime.now())
+        policymodel.Status = "等待投保"
+   
+        policymodel.save()        
+        #endregion
+
         # 投递保险公司 或 龙琨编号
-        postInsurer_HT('')
         # 反馈客户
 
-        sendResult = {}
-        sendResult['result'] = 1
-        sendResult['retmsg'] = '投保成功'
-        sendResult['data'] = {}
-        result = json.dumps(sendResult)
-        return json.loads(result)
+        result = {}
+        result['responsecode'] = '1'
+        result['responsemessage'] = '投保成功'
+        result['applicationserial'] = '投保成功'
+        resultReturn = json.dumps(result)
+        return json.loads(resultReturn)
     except Exception as err:
-        sendResult = {}
-        sendResult['result'] = 0
-        sendResult['retmsg'] = '投保失败: '+str(err)
-        sendResult['data'] = {}
-        result = json.dumps(sendResult)
-        return json.loads(result)
-
+        result = {}
+        result['responsecode'] = '0'
+        result['responsemessage'] = str(err).
+        result['applicationserial'] = ''
+        resultReturn = json.dumps(result)
+        return json.loads(resultReturn)
 
 
 # 注销接口
