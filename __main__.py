@@ -56,8 +56,8 @@ def index():
 # 投保接口
 @app.route('/sendpolicy', methods=['POST'])
 def sendpolicy():
-    # 获取请求
     try:
+        # 获取请求
         postdata = json.loads(request.get_data(as_text=True))
        # 保存客户运单
         policymodel = policy_model.remotedata()
@@ -106,23 +106,21 @@ def sendpolicy():
         policymodel.mpRate = postdata['volumeunit']
             
         # 投递保险公司 或 龙琨编号
-        postInsurer_HT('')
         # 反馈客户
 
-        sendResult = {}
-        sendResult['result'] = 1
-        sendResult['retmsg'] = '投保成功'
-        sendResult['data'] = {}
-        result = json.dumps(sendResult)
-        return json.loads(result)
+        result = {}
+        result['responsecode'] = '1'
+        result['responsemessage'] = '投保成功'
+        result['applicationserial'] = '投保成功'
+        resultReturn = json.dumps(result)
+        return json.loads(resultReturn)
     except Exception as err:
-        sendResult = {}
-        sendResult['result'] = 0
-        sendResult['retmsg'] = '投保失败: '+str(err)
-        sendResult['data'] = {}
-        result = json.dumps(sendResult)
-        return json.loads(result)
-
+        result = {}
+        result['responsecode'] = '0'
+        result['responsemessage'] = str(err).
+        result['applicationserial'] = ''
+        resultReturn = json.dumps(result)
+        return json.loads(resultReturn)
 
 
 # 注销接口
